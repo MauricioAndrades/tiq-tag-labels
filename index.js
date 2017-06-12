@@ -22,6 +22,7 @@
     function buildMappingContainer(elem) {
         class MappingContainer {
             constructor(ext, lr) {
+                // ecluded all pages loadrule. request @jason-paddock.
                 if (lr && lr !== 'all') this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr">' + lr + '</div></div>'];
                 if (ext) this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext">' + ext + '</div></div>'];
             }
