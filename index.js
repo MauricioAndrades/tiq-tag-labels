@@ -22,7 +22,7 @@
     function buildMappingContainer(elem) {
         class MappingContainer {
             constructor(ext, lr) {
-                if (lr) this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr">' + lr + '</div></div>'];
+                if (lr && lr !== 'all') this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr">' + lr + '</div></div>'];
                 if (ext) this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext">' + ext + '</div></div>'];
             }
             get content() {
@@ -66,6 +66,7 @@
                     }
                 }
                 var div = create_elem('div');
+                debugger;
                 if (this.lr) {
                     div.appendChild(create_elem('loadrule', this.lr));
                 }
