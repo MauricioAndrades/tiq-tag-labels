@@ -3,12 +3,11 @@
     var scope = {};
     var ext = utui.data.customizations;
     Object.keys(ext).forEach(function(extension) {
-        var curr_extension_number = extension;
         if (ext[extension].scope) {
-            var curr_scope = ext[extension].scope.split(',');
+            let curr_scope = ext[extension].scope.split(',');
             curr_scope.forEach(function(e, i) {
                 scope[e] = scope[e] || [];
-                scope[e].push(curr_extension_number);
+                scope[e].push(extension);
             });
         }
     });
