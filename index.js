@@ -1,5 +1,9 @@
 (function() {
-    $('.container_label').css('width', 'auto');
+    var stylesheet = document.createElement('style');
+    document.head.appendChild(stylesheet);
+    stylesheet.sheet.addRule('.container_label.expanded.csm_info::-webkit-scrollbar', 'display: none;');
+    stylesheet.sheet.addRule('.csm_info', 'overflow: scroll');
+    stylesheet.sheet.addRule('.csm_info', 'max-width: 152px');
     //Define object that will contain all extensions scoped to a tag
     function parseHTML(str) {
         var tmp = document.implementation.createHTMLDocument();
@@ -24,7 +28,7 @@
     var extensions_chkbox = document.querySelector('#ext_chkbox');
 
     loadrules_chkbox.onchange = function() {
-        document.querySelectorAll('.container_label.expand').forEach(function(o) {
+        document.querySelectorAll('.container_label.expanded.csm_info').forEach(function(o) {
             o.parentNode.removeChild(o)
         });
         add_info();
@@ -32,7 +36,7 @@
     }
 
     extensions_chkbox.onchange = function() {
-        document.querySelectorAll('.container_label.expand').forEach(function(o) {
+        document.querySelectorAll('.container_label.expanded').forEach(function(o) {
             o.parentNode.removeChild(o)
         });
         add_info();
@@ -69,7 +73,8 @@
                         var css = {
                             div: {
                                 display: 'inline-block',
-                                fontSize: '10px'
+                                fontSize: '10px',
+                                maxWidth: '200px'
                             },
                             loadrule: {
                                 'marginLeft': '3px',
@@ -91,7 +96,7 @@
                         var element;
                         if (type === 'div') {
                             element = document.createElement('div');
-                            element.classList.add('container_label', 'expand', 'csm_info');
+                            element.classList.add('container_label', 'expanded', 'csm_info');
                             for (var key in css[type]) element.style[key] = css[type][key];
                                 return element;
                         }
