@@ -1,4 +1,5 @@
 (function() {
+    $('.container_label').css('width', 'auto');
     //Define object that will contain all extensions scoped to a tag
     function parseHTML(str) {
         var tmp = document.implementation.createHTMLDocument();
@@ -27,6 +28,7 @@
             o.parentNode.removeChild(o)
         });
         add_info();
+        $('.container_label').css('width', 'auto');
     }
 
     extensions_chkbox.onchange = function() {
@@ -34,6 +36,7 @@
             o.parentNode.removeChild(o)
         });
         add_info();
+        $('.container_label').css('width', 'auto');
     }
 
     function add_info() {
