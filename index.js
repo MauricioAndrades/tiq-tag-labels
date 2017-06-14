@@ -11,8 +11,8 @@
         var selector = '#manageContainer_headerControls';
         var node = document.querySelector(selector);
         var chkboxes = {
-            lr: '<div class="tab-menu-item"><input id="loadrules_chkbox" type="checkbox" value="loadrules"><label for="loadrules_chkbox">loadrules</label></div>',
-            ext: '<div class="tab-menu-item"><input id="ext_chkbox" type="checkbox" value="ext"><label for="ext_chkbox">extensions</label></div>'
+            lr: '<div class="tab-menu-item"><input id="loadrules_chkbox" type="checkbox" value="loadrules"><label for="loadrules_chkbox"><i class="icon-book mapping-icon"></i></label></div>',
+            ext: '<div class="tab-menu-item"><input id="ext_chkbox" type="checkbox" value="ext"><label for="ext_chkbox"><i class="icon-cog mapping-icon"></i></label></div>'
         }
         node.appendChild(parseHTML(chkboxes.lr)[0]);
         node.appendChild(parseHTML(chkboxes.ext)[0]);
