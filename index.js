@@ -4,6 +4,11 @@
     stylesheet.sheet.addRule('.csm_info::-webkit-scrollbar', 'display: none;');
     stylesheet.sheet.addRule('.csm_info', 'overflow: scroll; max-width: 152px; font-size: 11px; vertical-align: middle; margin-top: -12px; white-space:nowrap;');
     stylesheet.sheet.addRule('.csm_info', 'max-width: 152px');
+    stylesheet.sheet.addRule('.short', 'max-width: 47px !important');
+    stylesheet.sheet.addRule('.med', 'max-width: 100px !important');
+    stylesheet.sheet.addRule('.long', 'max-width: 150px !important');
+    $(".container_variables.valuePositive").css('width', '22px');
+    $('.container_loadRules').css('width', '150px !important');
     //Define object that will contain all extensions scoped to a tag
     function parseHTML(str) {
         var tmp = document.implementation.createHTMLDocument();
@@ -71,13 +76,11 @@
                         var css = {
                             div: {
                                 display: 'inline-block',
-                                fontSize: '10px',
-                                maxWidth: '145px'
+                                fontSize: '11px'
                             },
                             loadrule: {
                                 'marginLeft': '3px',
                                 'marginRight': '5px',
-                                'width': 'auto',
                                 'paddingLeft': '3px',
                                 'display': 'inline-block',
                                 'height': '14px'
@@ -85,7 +88,6 @@
                             extension: {
                                 'marginLeft': '3px',
                                 'marginRight': '5px',
-                                'width': 'auto',
                                 'paddingLeft': '3px',
                                 'display:': 'inline-block',
                                 'height': '14px'
@@ -123,6 +125,8 @@
             var new_elem = mapping_container.buildContent();
             if (new_elem.hasChildNodes()) {
                 let anchor = elem.children[0].children[1].children[5];
+                var labels = $(elem).find('.labels-list-expanded').get(0);
+                labels && labels.hasChildNodes() ? new_elem.classList.add('short') : new_elem.classList.add('long') ;
                 anchor.parentNode.insertBefore(new_elem, anchor);
             }
         }
