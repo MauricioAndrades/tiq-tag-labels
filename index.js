@@ -1,8 +1,8 @@
 (function() {
     var stylesheet = document.createElement('style');
     document.head.appendChild(stylesheet);
-    stylesheet.sheet.addRule('.container_label.expanded.csm_info::-webkit-scrollbar', 'display: none;');
-    stylesheet.sheet.addRule('.csm_info', 'overflow: scroll');
+    stylesheet.sheet.addRule('.csm_info::-webkit-scrollbar', 'display: none;');
+    stylesheet.sheet.addRule('.csm_info', 'overflow: scroll; max-width: 152px; font-size: 11px; vertical-align: middle; margin-top: -12px; white-space:nowrap;');
     stylesheet.sheet.addRule('.csm_info', 'max-width: 152px');
     //Define object that will contain all extensions scoped to a tag
     function parseHTML(str) {
@@ -28,19 +28,17 @@
     var extensions_chkbox = document.querySelector('#ext_chkbox');
 
     loadrules_chkbox.onchange = function() {
-        document.querySelectorAll('.container_label.expanded.csm_info').forEach(function(o) {
+        document.querySelectorAll('.csm_info').forEach(function(o) {
             o.parentNode.removeChild(o)
         });
         add_info();
-        $('.container_label').css('width', 'auto');
     }
 
     extensions_chkbox.onchange = function() {
-        document.querySelectorAll('.container_label.expanded').forEach(function(o) {
+        document.querySelectorAll('.csm_info').forEach(function(o) {
             o.parentNode.removeChild(o)
         });
         add_info();
-        $('.container_label').css('width', 'auto');
     }
 
     function add_info() {
@@ -60,8 +58,8 @@
             class MappingContainer {
                 constructor(ext, lr) {
                     // ecluded all pages loadrule. request @jason-paddock.
-                    if (lr && lr !== 'all' && document.querySelector('#loadrules_chkbox').checked) this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr" style="margin-left: 3px; width: auto">' + lr + '</div></div>'];
-                    if (ext && document.querySelector('#ext_chkbox').checked) this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext" style="margin-left: 3px; width: auto">' + ext + '</div></div>'];
+                    if (lr && lr !== 'all' && document.querySelector('#loadrules_chkbox').checked) this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr" style="margin-left: 3px; width: auto; max-width: 140px;">' + lr + '</div></div>'];
+                    if (ext && document.querySelector('#ext_chkbox').checked) this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext" style="margin-left: 3px; width: auto; max-width:140px">' + ext + '</div></div>'];
                 }
                 get content() {
                     return this.buildContent();
@@ -74,7 +72,7 @@
                             div: {
                                 display: 'inline-block',
                                 fontSize: '10px',
-                                maxWidth: '200px'
+                                maxWidth: '145px'
                             },
                             loadrule: {
                                 'marginLeft': '3px',
@@ -96,7 +94,7 @@
                         var element;
                         if (type === 'div') {
                             element = document.createElement('div');
-                            element.classList.add('container_label', 'expanded', 'csm_info');
+                            element.classList.add('csm_info');
                             for (var key in css[type]) element.style[key] = css[type][key];
                                 return element;
                         }
@@ -122,8 +120,11 @@
                 }
             };
             var mapping_container = new MappingContainer(elem.dataset.extensions, elem.dataset.loadRules);
-            var anchor = elem.children[0].children[1].children[5];
-            anchor.parentNode.insertBefore(mapping_container.buildContent(), anchor);
+            var new_elem = mapping_container.buildContent();
+            if (new_elem.hasChildNodes()) {
+                let anchor = elem.children[0].children[1].children[5];
+                anchor.parentNode.insertBefore(new_elem, anchor);
+            }
         }
         // build the data-set
         var tags = (function() {
