@@ -183,11 +183,11 @@
 	};
 })();
 
-$(".tabLabel").on('click', function(e) {
-	window.requestIdleCallback(function() {
-
-	})
-})
+// $(".tabLabel").on('click', function(e) {
+// 	window.requestIdleCallback(function() {
+		
+// 	})
+// })
 
 function get_checkbox_state() {
 	var current_tab = utui.config.currentTab;
