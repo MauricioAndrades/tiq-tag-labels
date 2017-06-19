@@ -57,7 +57,7 @@ window.csm = {};
 			node.appendChild(csm.parseHTML(chkboxes.scope)[0]);
 		}
 	}
-	
+
 
 	csm.get_checkbox_state = function() {
 		var current_tab = utui.config.currentTab;
@@ -142,6 +142,17 @@ window.csm = {};
 		}
 	};
 
+	csm.build_mapping_container = function(element) {
+		var mapping_container = new csm.MappingContainer(element.dataset.extensions, element.dataset.loadRules);
+		var new_elem = mapping_container.buildContent();
+		if (new_elem.hasChildNodes()) {
+			let anchor = element.children[0].children[1].children[5];
+			var labels = $(element).find('.labels-list').get(0);
+			if (labels) labels.classList.add('hidden');
+			anchor.parentNode.insertBefore(new_elem, anchor);
+		}
+	}
+
 	csm.add_info = function() {
 		if (csm.get_checkbox_state === false) {
 			return;
@@ -158,16 +169,6 @@ window.csm = {};
 			}
 		});
 
-		function buildMappingContainer(elem) {
-			var mapping_container = new csm.MappingContainer(elem.dataset.extensions, elem.dataset.loadRules);
-			var new_elem = mapping_container.buildContent();
-			if (new_elem.hasChildNodes()) {
-				let anchor = elem.children[0].children[1].children[5];
-				var labels = $(elem).find('.labels-list').get(0);
-				if (labels) labels.classList.add('hidden');
-				anchor.parentNode.insertBefore(new_elem, anchor);
-			}
-		}
 		// build the data-set
 		var tags = (function() {
 			return {
@@ -185,20 +186,25 @@ window.csm = {};
 			}
 			return elem;
 		});
-		// $(".container_label.expanded").each(function(elem) {
-		//     if (!this.hasChildNodes())
-		//         $(this).css('width', '0');
-		// });
-		// Here we build the mapping container for each tag in the UI.
+
 		tags.elems.forEach(function(elem) {
 			window.requestAnimationFrame(function() {
-				buildMappingContainer(elem);
+				csm.build_mapping_container(elem);
 			});
 		});
 	}
-	
+
+	csm.add_restore_callback = function() {
+		$(".tabLabel").on('mouseup', function(e) {
+			window.requestIdleCallback(function() {
+				csm.add_info();
+			})
+		})
+	}
+
 	csm.create_checkbox.tags();
 	csm.create_checkbox.customizations();
+	csm.add_restore_callback();
 })();
 
 // $(".tabLabel").on('click', function(e) {
