@@ -15,40 +15,49 @@ window.csm = {};
 
 
 	//Define object that will contain all extensions scoped to a tag
-	function parseHTML(str) {
+	csm.parseHTML = function parseHTML(str) {
 		var tmp = document.implementation.createHTMLDocument();
 		tmp.body.innerHTML = str;
 		return tmp.body.children;
 	};
 
-	function create_checkboxes() {
-		var selector = '#manageContainer_headerControls';
-		var node = document.querySelector(selector);
-		var chkboxes = {
-			lr: '<div class="tab-menu-item"><input class="chkbox_manage" id="loadrules_chkbox" type="checkbox" value="loadrules"><label for="loadrules_chkbox"><i class="icon-book mapping-icon"></i></label></div>',
-			ext: '<div class="tab-menu-item"><input class="chkbox_manage" id="ext_chkbox" type="checkbox" value="ext"><label for="ext_chkbox"><i class="icon-cog mapping-icon"></i></label></div>'
+	csm.create_checkbox = {
+		tags: function() {
+			var selector = '#manageContainer_headerControls';
+			var node = document.querySelector(selector);
+			var chkboxes = {
+				lr: '<div class="tab-menu-item"><input class="chkbox_manage" id="loadrules_chkbox" type="checkbox" value="loadrules"><label for="loadrules_chkbox"><i class="icon-book mapping-icon"></i></label></div>',
+				ext: '<div class="tab-menu-item"><input class="chkbox_manage" id="ext_chkbox" type="checkbox" value="ext"><label for="ext_chkbox"><i class="icon-cog mapping-icon"></i></label></div>'
+			}
+			node.appendChild(csm.parseHTML(chkboxes.lr)[0]);
+			node.appendChild(csm.parseHTML(chkboxes.ext)[0]);
+			var loadrules_chkbox = document.querySelector('#loadrules_chkbox');
+			var extensions_chkbox = document.querySelector('#ext_chkbox');
+
+			loadrules_chkbox.onchange = function() {
+				document.querySelectorAll('.container_info').forEach(function(o) {
+					o.parentNode.removeChild(o)
+				});
+				csm.add_info();
+			}
+
+			extensions_chkbox.onchange = function() {
+				document.querySelectorAll('.container_info').forEach(function(o) {
+					o.parentNode.removeChild(o)
+				});
+				csm.add_info();
+			}
+		},
+		customizations: function() {
+			var selector = '#customizeContainer_headerControls';
+			var node = document.querySelector(selector);
+			var chkboxes = {
+				scope: '<div class="tab-menu-item"><input class="chkbox_customizations" id="customizations_chkbox" type="checkbox" value="customizations"><label for="customizations_chkbox"><i class="icon-book mapping-icon"></i></label></div>'
+			}
+			node.appendChild(csm.parseHTML(chkboxes.scope)[0]);
 		}
-		node.appendChild(parseHTML(chkboxes.lr)[0]);
-		node.appendChild(parseHTML(chkboxes.ext)[0]);
-	};
-	create_checkboxes();
-
-	var loadrules_chkbox = document.querySelector('#loadrules_chkbox');
-	var extensions_chkbox = document.querySelector('#ext_chkbox');
-
-	loadrules_chkbox.onchange = function() {
-		document.querySelectorAll('.container_info').forEach(function(o) {
-			o.parentNode.removeChild(o)
-		});
-		add_info();
 	}
-
-	extensions_chkbox.onchange = function() {
-		document.querySelectorAll('.container_info').forEach(function(o) {
-			o.parentNode.removeChild(o)
-		});
-		add_info();
-	}
+	
 
 	csm.get_checkbox_state = function() {
 		var current_tab = utui.config.currentTab;
@@ -110,13 +119,13 @@ window.csm = {};
 					return element;
 				}
 				if (type === 'loadrule') {
-					element = parseHTML(value.join(''))[0];
+					element = csm.parseHTML(value.join(''))[0];
 					for (var key in css[type])
 						element.style[key] = css[type][key];
 					return element;
 				}
 				if (type === 'extension') {
-					element = parseHTML(value.join(''))[0];
+					element = csm.parseHTML(value.join(''))[0];
 					for (var key in css[type])
 						element.style[key] = css[type][key];
 					return element;
@@ -134,7 +143,9 @@ window.csm = {};
 	};
 
 	csm.add_info = function() {
-		if (csm.get_checkbox_state === false) {return;}
+		if (csm.get_checkbox_state === false) {
+			return;
+		}
 		var scope = {};
 		var ext = utui.data.customizations;
 		Object.keys(ext).forEach(function(extension) {
@@ -185,6 +196,9 @@ window.csm = {};
 			});
 		});
 	}
+	
+	csm.create_checkbox.tags();
+	csm.create_checkbox.customizations();
 })();
 
 // $(".tabLabel").on('click', function(e) {
