@@ -1,3 +1,4 @@
+window.csm = {};
 (function() {
 	var stylesheet = document.createElement('style');
 	document.head.appendChild(stylesheet);
@@ -49,7 +50,91 @@
 		add_info();
 	}
 
-	function add_info() {
+	csm.get_checkbox_state = function() {
+		var current_tab = utui.config.currentTab;
+		var selector = '.chkbox' + '_' + current_tab;
+		var checked = false;
+		var check_boxes = document.querySelectorAll(selector);
+		if (check_boxes) {
+			for (let i = 0; i < check_boxes.length; i++) {
+				if (check_boxes[i].checked) {
+					checked = true;
+					break;
+				}
+			}
+		}
+		return checked;
+	}
+
+	csm.MappingContainer = class MappingContainer {
+		constructor(ext, lr) {
+			// ecluded all pages loadrule. request @jason-paddock.
+			if (lr && lr !== 'all' && document.querySelector('#loadrules_chkbox').checked)
+				this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr" style="margin-left: 3px; width: auto">' + lr + '</div></div>'];
+			if (ext && document.querySelector('#ext_chkbox').checked)
+				this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext" style="margin-left: 3px; width: auto">' + ext + '</div></div>'];
+		}
+		get content() {
+			return this.buildContent();
+		}
+		buildContent() {
+			function create_elem(type, value) {
+				// here we can add custom css to each element in the mapping container.
+				// format should be camelCalse. paddingLeft will be added as padding-left.
+				var css = {
+					div: {
+						display: 'inline-block',
+						fontSize: '11px'
+					},
+					loadrule: {
+						'marginLeft': '3px',
+						'marginRight': '5px',
+						'paddingLeft': '3px',
+						'display': 'inline-block',
+						'height': '14px'
+					},
+					extension: {
+						'marginLeft': '3px',
+						'marginRight': '5px',
+						'paddingLeft': '3px',
+						'display:': 'inline-block',
+						'height': '14px'
+					}
+				};
+				var element;
+				if (type === 'div') {
+					element = document.createElement('div');
+					element.classList.add('container_info');
+					for (var key in css[type])
+						element.style[key] = css[type][key];
+					return element;
+				}
+				if (type === 'loadrule') {
+					element = parseHTML(value.join(''))[0];
+					for (var key in css[type])
+						element.style[key] = css[type][key];
+					return element;
+				}
+				if (type === 'extension') {
+					element = parseHTML(value.join(''))[0];
+					for (var key in css[type])
+						element.style[key] = css[type][key];
+					return element;
+				}
+			}
+			var div = create_elem('div');
+			if (this.lr) {
+				div.appendChild(create_elem('loadrule', this.lr));
+			}
+			if (this.ext) {
+				div.appendChild(create_elem('extension', this.ext));
+			}
+			return div;
+		}
+	};
+
+	csm.add_info = function() {
+		if (csm.get_checkbox_state === false) {return;}
 		var scope = {};
 		var ext = utui.data.customizations;
 		Object.keys(ext).forEach(function(extension) {
@@ -63,73 +148,7 @@
 		});
 
 		function buildMappingContainer(elem) {
-			class MappingContainer {
-				constructor(ext, lr) {
-					// ecluded all pages loadrule. request @jason-paddock.
-					if (lr && lr !== 'all' && document.querySelector('#loadrules_chkbox').checked)
-						this.lr = ['<div class="mapping-item mapping-lr"><i class="icon-book mapping-icon"></i><div class="lr" style="margin-left: 3px; width: auto">' + lr + '</div></div>'];
-					if (ext && document.querySelector('#ext_chkbox').checked)
-						this.ext = ['<div class="mapping-item mapping-ext"><i class="icon-cog mapping-icon"></i><div class="ext" style="margin-left: 3px; width: auto">' + ext + '</div></div>'];
-				}
-				get content() {
-					return this.buildContent();
-				}
-				buildContent() {
-					function create_elem(type, value) {
-						// here we can add custom css to each element in the mapping container.
-						// format should be camelCalse. paddingLeft will be added as padding-left.
-						var css = {
-							div: {
-								display: 'inline-block',
-								fontSize: '11px'
-							},
-							loadrule: {
-								'marginLeft': '3px',
-								'marginRight': '5px',
-								'paddingLeft': '3px',
-								'display': 'inline-block',
-								'height': '14px'
-							},
-							extension: {
-								'marginLeft': '3px',
-								'marginRight': '5px',
-								'paddingLeft': '3px',
-								'display:': 'inline-block',
-								'height': '14px'
-							}
-						};
-						var element;
-						if (type === 'div') {
-							element = document.createElement('div');
-							element.classList.add('container_info');
-							for (var key in css[type])
-								element.style[key] = css[type][key];
-							return element;
-						}
-						if (type === 'loadrule') {
-							element = parseHTML(value.join(''))[0];
-							for (var key in css[type])
-								element.style[key] = css[type][key];
-							return element;
-						}
-						if (type === 'extension') {
-							element = parseHTML(value.join(''))[0];
-							for (var key in css[type])
-								element.style[key] = css[type][key];
-							return element;
-						}
-					}
-					var div = create_elem('div');
-					if (this.lr) {
-						div.appendChild(create_elem('loadrule', this.lr));
-					}
-					if (this.ext) {
-						div.appendChild(create_elem('extension', this.ext));
-					}
-					return div;
-				}
-			};
-			var mapping_container = new MappingContainer(elem.dataset.extensions, elem.dataset.loadRules);
+			var mapping_container = new csm.MappingContainer(elem.dataset.extensions, elem.dataset.loadRules);
 			var new_elem = mapping_container.buildContent();
 			if (new_elem.hasChildNodes()) {
 				let anchor = elem.children[0].children[1].children[5];
@@ -168,38 +187,8 @@
 	}
 })();
 
-(function() {
-	var get_pos = function(element) {
-		var data = element.getBoundingClientRect();
-		return {
-			x: data.left + data.width / 2,
-			y: data.top + data.height / 2
-		};
-	};
-	return get_distance = function(a, b) {
-		var aPosition = get_pos(a);
-		var bPosition = get_pos(b);
-		return Math.sqrt(Math.pow(aPosition.x - bPosition.x, 2) + Math.pow(aPosition.y - bPosition.y, 2));
-	};
-})();
-
 // $(".tabLabel").on('click', function(e) {
 // 	window.requestIdleCallback(function() {
-		
+
 // 	})
 // })
-
-function get_checkbox_state() {
-	var current_tab = utui.config.currentTab;
-	var selector = '.chkbox' + '_' + current_tab;
-	var checked = false;
-	var check_boxes = document.querySelectorAll(selector);
-	if (check_boxes) {
-		for (let i = 0; i < check_boxes.length; i++) {
-			if (check_boxes[i].checked) {
-				checked = true; break;
-			}
-		}
-	}
-	return checked;
-}
