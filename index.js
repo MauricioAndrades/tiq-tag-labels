@@ -1,17 +1,19 @@
 window.csm = {};
 (function() {
-	var stylesheet = document.createElement('style');
-	document.head.appendChild(stylesheet);
-	stylesheet.sheet.addRule('.container_info::-webkit-scrollbar', 'display: none;');
-	stylesheet.sheet.addRule('.container_info', 'overflow: scroll; max-width: 152px; font-size: 11px; vertical-align: middle; margin-top: -12px; white-space:nowrap;');
-	stylesheet.sheet.addRule('.container_info', 'max-width: 152px');
-	stylesheet.sheet.addRule('.short', 'max-width: 47px !important');
-	stylesheet.sheet.addRule('.med', 'max-width: 150px !important');
-	stylesheet.sheet.addRule('.long', 'max-width: 300px !important');
-	stylesheet.sheet.addRule('.hidden', 'display: none;');
-	$(".container_variables.valuePositive").css('width', '22px');
-	$('.container_loadRules').css('width', '150px !important');
-	$("div[id*='_mappedVars']").css('width', '12px');
+	csm.prime_css = function() {
+		var stylesheet = document.createElement('style');
+		document.head.appendChild(stylesheet);
+		stylesheet.sheet.addRule('.container_info::-webkit-scrollbar', 'display: none;');
+		stylesheet.sheet.addRule('.container_info', 'overflow: scroll; max-width: 152px; font-size: 11px; vertical-align: middle; margin-top: -12px; white-space:nowrap;');
+		stylesheet.sheet.addRule('.container_info', 'max-width: 152px');
+		stylesheet.sheet.addRule('.short', 'max-width: 47px !important');
+		stylesheet.sheet.addRule('.med', 'max-width: 150px !important');
+		stylesheet.sheet.addRule('.long', 'max-width: 300px !important');
+		stylesheet.sheet.addRule('.hidden', 'display: none;');
+		$(".container_variables.valuePositive").css('width', '22px');
+		$('.container_loadRules').css('width', '150px !important');
+		$("div[id*='_mappedVars']").css('width', '12px');
+	}
 
 
 	//Define object that will contain all extensions scoped to a tag
@@ -20,6 +22,44 @@ window.csm = {};
 		tmp.body.innerHTML = str;
 		return tmp.body.children;
 	};
+
+	csm.get_current_tab = function() {
+		return utui.config.currentTab;
+	}
+
+	csm.labels = {
+		find: function(element) {
+			if (!element) return null;
+			return $(element).find('.container_label').get(0);
+		},
+		get_selector: function() {
+			return '.container_label' + '[data-type="' + csm.get_current_tab() + '"]'
+		},
+		hide: function() {
+			var labels = document.querySelectorAll(csm.labels.get_selector());
+			for (let i = 0; i < labels.length; i++) {
+				window.requestAnimationFrame(function() {
+					labels[i].classList.add('hidden');
+				})
+			}
+		},
+		show: function() {
+			var labels = document.querySelectorAll(csm.labels.get_selector());
+			for (let i = 0; i < labels.length; i++) {
+				labels[i].classList.remove('hidden');
+			}
+		}
+	}
+
+	csm.remove_info = function() {
+		return document.querySelectorAll('.container_info').forEach(function(o) {
+			o.parentNode.removeChild(o)
+		});
+	}
+	
+	csm.has_info = function() {
+		return document.querySelector('.container_info') === null ? false:true;
+	}
 
 	csm.create_checkbox = {
 		tags: function() {
@@ -35,17 +75,19 @@ window.csm = {};
 			var extensions_chkbox = document.querySelector('#ext_chkbox');
 
 			loadrules_chkbox.onchange = function() {
-				document.querySelectorAll('.container_info').forEach(function(o) {
-					o.parentNode.removeChild(o)
-				});
-				csm.add_info();
+				if (csm.get_checkbox_state()) {
+					if (csm.has_info()) csm.remove_info(); csm.add_info();
+				} else {
+					csm.remove_info();
+				}
 			}
 
 			extensions_chkbox.onchange = function() {
-				document.querySelectorAll('.container_info').forEach(function(o) {
-					o.parentNode.removeChild(o)
-				});
-				csm.add_info();
+				if (csm.get_checkbox_state()) {
+					if (csm.has_info()) csm.remove_info(); csm.add_info();
+				} else {
+					csm.remove_info();
+				}
 			}
 		},
 		customizations: function() {
@@ -147,8 +189,10 @@ window.csm = {};
 		var new_elem = mapping_container.buildContent();
 		if (new_elem.hasChildNodes()) {
 			let anchor = element.children[0].children[1].children[5];
-			var labels = $(element).find('.labels-list').get(0);
-			if (labels) labels.classList.add('hidden');
+			let labels = $(element).find('.labels-list').get(0);
+			if (labels) {
+				labels.classList.add('hidden');
+			}
 			anchor.parentNode.insertBefore(new_elem, anchor);
 		}
 	}
@@ -202,6 +246,7 @@ window.csm = {};
 		})
 	}
 
+	csm.prime_css();
 	csm.create_checkbox.tags();
 	csm.create_checkbox.customizations();
 	csm.add_restore_callback();
