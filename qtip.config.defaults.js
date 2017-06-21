@@ -6,7 +6,6 @@ $.fn.qtip.defaults = {
     content: {
         text: true,
         attr: 'title',
-        text: false,
         button: false
     },
     position: {
