@@ -28,7 +28,9 @@ var init_qtip_css_mod = function(config) {
 	stylesheet.id = 'qtip-mod';
 	document.head.appendChild(stylesheet);
 	stylesheet.sheet.addRule('.qtip-mono', 'font-family: Consolas for BBEdit !important;');
+    stylesheet.sheet.addRule('.qtip-title', 'margin-right: 20px;');
 	stylesheet.sheet.addRule('ul.tip', 'padding-left: 0px !important; list-style-type:none;');
+	stylesheet.sheet.addRule('p.tip-header', 'padding-left: 0px !important; height: 20px; display: inline-block; margin: 1px; font-weight: bolder; font-size: 14px');
 };
 
 function parseHTML(str) {var tmp = document.implementation.createHTMLDocument();tmp.body.innerHTML = str;return tmp.body.children[0];}
@@ -59,15 +61,17 @@ var init_qtip_config = function(config) {
 			title: function(event, api) {
 				var id = this[0].parentNode.parentNode.parentNode.dataset.id;
 				var title = id + ": " + utui.data.manage[id].title;
-				return '<icon class="icon-tag inline"></icon>' + "<p>" + title + "</p>";
+                // return '<icon class="icon-tag inline"></icon>' + "<p class='tip-header'>" + title + "</p>";
+                return "<p class='tip-header'>" + title + "</p>";
 			}
 		},
 		style: {
 			classes: "qtip-bootstrap qtip-shadow qtip-mono"
 		},
 		hide: {
+            inactive: false,
 			fixed: true,
-			delay: 600
+// 			delay: 600
 		},
 			show: {
 				effect: function() {
@@ -78,7 +82,7 @@ var init_qtip_config = function(config) {
 			my: 'center left',
 			at: 'center right',
 			adjust: {
-				x: 20,
+				x: 0,
 				y: 0,
 				method: "flip"
 			}
